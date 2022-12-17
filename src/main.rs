@@ -1,8 +1,11 @@
 use arb::{
+    anyhow, basic_config,
     cli::{Cli, SubCommands},
-    commands::{aur, official, custom},
-    Result, BASIC_CONFIG, CUSTOM_PATH, anyhow,
+    commands::{aur, custom, official},
+    Result, CUSTOM_PATH,
 };
+use console::Term;
+use dialoguer::{theme::ColorfulTheme, Input};
 use flate2::read::GzDecoder;
 use serde::Deserialize;
 use std::{
@@ -39,8 +42,11 @@ async fn main() -> Result<()> {
     }
 
     if !custom_config_path.clone().exists() {
+        let server_name = Input::<String>::with_theme(&ColorfulTheme::default())
+            .with_prompt("Server name?")
+            .interact_on(&Term::stderr())?;
         let mut file = File::create(&custom_config_path)?;
-        file.write_all(BASIC_CONFIG.as_bytes())?;
+        file.write_all(basic_config(&server_name).as_bytes())?;
     }
 
     let config_content = read_to_string(&custom_config_path)?;
@@ -95,28 +101,28 @@ async fn main() -> Result<()> {
                     return Ok(());
                 }
             },
-            SubCommands::Custom(_custom) => {
-                match(_custom.add, _custom.remove) {
-                    (true, false) => {
-                        custom::add(&_custom.package_path, &package_save_path, &server_name)?;
-                    },
-                    (false, true) => {
-                        if let Some(package_name) = _custom.package_name {
-                            custom::remove(&package_name, &package_save_path, &server_name)?;
-                        } else {
-                            return Err(anyhow!("Failed to remove package, cause `pacakge_name` is no t provided."))
-                        }
-                    },
-                    (true, true) => {
-                        cmd.print_help()?;
-                        return Ok(());
-                    },
-                    (false, false) => {
-                        cmd.print_help()?;
-                        return Ok(());
+            SubCommands::Custom(_custom) => match (_custom.add, _custom.remove) {
+                (true, false) => {
+                    custom::add(&_custom.package_path, &package_save_path, &server_name)?;
+                }
+                (false, true) => {
+                    if let Some(package_name) = _custom.package_name {
+                        custom::remove(&package_name, &package_save_path, &server_name)?;
+                    } else {
+                        return Err(anyhow!(
+                            "Failed to remove package, cause `pacakge_name` is no t provided."
+                        ));
                     }
                 }
-            }
+                (true, true) => {
+                    cmd.print_help()?;
+                    return Ok(());
+                }
+                (false, false) => {
+                    cmd.print_help()?;
+                    return Ok(());
+                }
+            },
         }
     }
     if cli.show_all {

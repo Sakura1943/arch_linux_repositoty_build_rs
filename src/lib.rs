@@ -9,15 +9,12 @@ pub static CUSTOM_PATH: Lazy<String> = Lazy::new(|| {
     format!("{home_path}/.local/share/arch_linux_repository_build")
 });
 
-pub static BASIC_CONFIG: Lazy<String> = Lazy::new(|| {
+pub fn basic_config(server_name: &str) -> String {
     format!(
         "[basic]
-server_name = \"sakunia\"
+server_name = \"{server_name}\"
 save_path = \"{}\"
 mirror_server = \"https://mirrors.bfsu.edu.cn/archlinux\"",
-        format!(
-            "{}/repository",
-            format!("{}", CUSTOM_PATH.to_owned())
-        )
+        format!("{}/repository", format!("{}", CUSTOM_PATH.to_owned()))
     )
-});
+}
