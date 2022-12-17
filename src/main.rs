@@ -45,8 +45,12 @@ async fn main() -> Result<()> {
         let server_name = Input::<String>::with_theme(&ColorfulTheme::default())
             .with_prompt("Server name?")
             .interact_on(&Term::stderr())?;
+        let server = Input::<String>::with_theme(&ColorfulTheme::default())
+            .with_prompt("Server url?")
+            .default("https://mirrors.bfsu.edu.cn/archlinux".to_owned())
+            .interact_on(&Term::stderr())?;
         let mut file = File::create(&custom_config_path)?;
-        file.write_all(basic_config(&server_name).as_bytes())?;
+        file.write_all(basic_config(&server_name, &server).as_bytes())?;
     }
 
     let config_content = read_to_string(&custom_config_path)?;
@@ -65,10 +69,14 @@ async fn main() -> Result<()> {
         match subcommands {
             SubCommands::Aur(_aur) => match (_aur.add, _aur.remove) {
                 (true, false) => {
-                    aur::add(&_aur.package_name, &package_save_path, &server_name).await?;
+                    for pkg_name in _aur.package_name {
+                        aur::add(&pkg_name, &package_save_path, &server_name).await?;
+                    }
                 }
                 (false, true) => {
-                    aur::remove(&_aur.package_name, &package_save_path, &server_name)?;
+                    for pkg_name in _aur.package_name {
+                        aur::remove(&pkg_name, &package_save_path, &server_name)?;
+                    }
                 }
                 (true, true) => {
                     cmd.print_help()?;
@@ -81,16 +89,15 @@ async fn main() -> Result<()> {
             },
             SubCommands::Official(_official) => match (_official.add, _official.remove) {
                 (true, false) => {
-                    official::add(
-                        &_official.package_name,
-                        &mirror_server,
-                        &package_save_path,
-                        &server_name,
-                    )
-                    .await?;
+                    for pkg_name in _official.package_name {
+                        official::add(&pkg_name, &mirror_server, &package_save_path, &server_name)
+                            .await?;
+                    }
                 }
                 (false, true) => {
-                    official::remove(&_official.package_name, &package_save_path, &server_name)?;
+                    for pkg_name in _official.package_name {
+                        official::remove(&pkg_name, &package_save_path, &server_name)?;
+                    }
                 }
                 (true, true) => {
                     cmd.print_help()?;
@@ -103,14 +110,24 @@ async fn main() -> Result<()> {
             },
             SubCommands::Custom(_custom) => match (_custom.add, _custom.remove) {
                 (true, false) => {
-                    custom::add(&_custom.package_path, &package_save_path, &server_name)?;
+                    if let Some(package_path) = _custom.package_path {
+                        for pkg_path in package_path {
+                            custom::add(&pkg_path, &package_save_path, &server_name)?;
+                        }
+                    } else {
+                        return Err(anyhow!(
+                            "Failed to add package, cause `package_path` is not provided."
+                        ));
+                    }
                 }
                 (false, true) => {
                     if let Some(package_name) = _custom.package_name {
-                        custom::remove(&package_name, &package_save_path, &server_name)?;
+                        for pkg_name in package_name {
+                            custom::remove(&pkg_name, &package_save_path, &server_name)?;
+                        }
                     } else {
                         return Err(anyhow!(
-                            "Failed to remove package, cause `pacakge_name` is no t provided."
+                            "Failed to remove package, cause `package_name` is not provided."
                         ));
                     }
                 }

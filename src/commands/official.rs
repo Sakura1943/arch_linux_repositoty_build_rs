@@ -79,7 +79,7 @@ pub async fn add(
     let file_name = package_info.file_name;
     let repo = package_info.repo;
     let pkg_uri = format!("{server_path}/{repo}/os/x86_64/{file_name}");
-    println!("Download uri: {pkg_uri}");
+    println!("Download url: {pkg_uri}");
     let sig_uri = format!("{pkg_uri}.sig");
     let pkg_bytes = CLIENT.get(&pkg_uri).send().await?.bytes().await?;
     let sig_bytes = CLIENT.get(&sig_uri).send().await?.bytes().await?;

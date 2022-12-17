@@ -26,7 +26,7 @@ pub enum SubCommands {
 #[derive(Clone, Args)]
 pub struct Aur {
     #[arg(help = "Aur package name")]
-    pub package_name: String,
+    pub package_name: Vec<String>,
     #[arg(short, long, help = "Add aur package to repository")]
     pub add: bool,
     #[arg(short, long, help = "Remove package from repository")]
@@ -36,7 +36,7 @@ pub struct Aur {
 #[derive(Clone, Args)]
 pub struct Official {
     #[arg(help = "Official package name")]
-    pub package_name: String,
+    pub package_name: Vec<String>,
     #[arg(short, long, help = "Add official package to repository")]
     pub add: bool,
     #[arg(short, long, help = "Remove package from repository")]
@@ -46,9 +46,9 @@ pub struct Official {
 #[derive(Clone, Args)]
 pub struct Custom {
     #[arg(help = "Custom package path")]
-    pub package_path: PathBuf,
+    pub package_path: Option<Vec<PathBuf>>,
     #[arg(help = "Custom package name of the package to bde deleted")]
-    pub package_name: Option<String>,
+    pub package_name: Option<Vec<String>>,
     #[arg(short, long, help = "Add custom package to repository")]
     pub add: bool,
     #[arg(short, long, help = "Remove custom package from repository")]
