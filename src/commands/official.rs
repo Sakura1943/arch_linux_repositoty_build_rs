@@ -99,7 +99,7 @@ pub async fn add(
 }
 
 
-pub async fn remove(package_name: &str, package_save_path: &str, server_name: &str) -> Result<()> {
+pub fn remove(package_name: &str, package_save_path: &str, server_name: &str) -> Result<()> {
     (Exec::shell(format!(
         "repo-remove {server_name}.db.tar.gz {package_name}"
     )))

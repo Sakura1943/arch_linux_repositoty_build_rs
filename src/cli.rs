@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 use clap::{Args, Command, CommandFactory, Parser, Subcommand};
 
 #[derive(Parser, Clone)]
@@ -17,6 +19,8 @@ pub enum SubCommands {
     Aur(Aur),
     #[command(about = "Official package operations")]
     Official(Official),
+    #[command(about = "Custom package operations")]
+    Custom(Custom)
 }
 
 #[derive(Clone, Args)]
@@ -36,6 +40,18 @@ pub struct Official {
     #[arg(short, long, help = "Add official package to repository")]
     pub add: bool,
     #[arg(short, long, help = "Remove package from repository")]
+    pub remove: bool
+}
+
+#[derive(Clone, Args)]
+pub struct Custom {
+    #[arg(help = "Custom package path")]
+    pub package_path: PathBuf,
+    #[arg(help = "Custom package name of the package to bde deleted")]
+    pub package_name: Option<String>,
+    #[arg(short, long, help = "Add custom package to repository")]
+    pub add: bool,
+    #[arg(short, long, help = "Remove custom package from repository")]
     pub remove: bool
 }
 

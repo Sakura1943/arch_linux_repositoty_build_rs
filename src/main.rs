@@ -1,7 +1,7 @@
 use arb::{
     cli::{Cli, SubCommands},
-    commands::{aur, official},
-    Result, BASIC_CONFIG, CUSTOM_PATH,
+    commands::{aur, official, custom},
+    Result, BASIC_CONFIG, CUSTOM_PATH, anyhow,
 };
 use flate2::read::GzDecoder;
 use serde::Deserialize;
@@ -62,7 +62,7 @@ async fn main() -> Result<()> {
                     aur::add(&_aur.package_name, &package_save_path, &server_name).await?;
                 }
                 (false, true) => {
-                    aur::remove(&_aur.package_name, &package_save_path, &server_name).await?;
+                    aur::remove(&_aur.package_name, &package_save_path, &server_name)?;
                 }
                 (true, true) => {
                     cmd.print_help()?;
@@ -84,8 +84,7 @@ async fn main() -> Result<()> {
                     .await?;
                 }
                 (false, true) => {
-                    official::remove(&_official.package_name, &package_save_path, &server_name)
-                        .await?;
+                    official::remove(&_official.package_name, &package_save_path, &server_name)?;
                 }
                 (true, true) => {
                     cmd.print_help()?;
@@ -96,6 +95,28 @@ async fn main() -> Result<()> {
                     return Ok(());
                 }
             },
+            SubCommands::Custom(_custom) => {
+                match(_custom.add, _custom.remove) {
+                    (true, false) => {
+                        custom::add(&_custom.package_path, &package_save_path, &server_name)?;
+                    },
+                    (false, true) => {
+                        if let Some(package_name) = _custom.package_name {
+                            custom::remove(&package_name, &package_save_path, &server_name)?;
+                        } else {
+                            return Err(anyhow!("Failed to remove package, cause `pacakge_name` is no t provided."))
+                        }
+                    },
+                    (true, true) => {
+                        cmd.print_help()?;
+                        return Ok(());
+                    },
+                    (false, false) => {
+                        cmd.print_help()?;
+                        return Ok(());
+                    }
+                }
+            }
         }
     }
     if cli.show_all {

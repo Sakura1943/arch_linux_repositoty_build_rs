@@ -40,10 +40,10 @@ pub async fn add(package_name: &str, package_save_path: &str, server_name: &str)
             .to_string()
             .ends_with("pkg.tar.zst")
         {
-            println!("{}", file.path().to_string_lossy().to_string());
+            println!("{}", file.path().to_string_lossy());
             (Exec::shell(&format!(
                 "repo-add {server_name}.db.tar.gz {}",
-                file.path().to_string_lossy().to_string()
+                file.path().to_string_lossy()
             )))
             .cwd(&package_save_path)
             .join()?;
@@ -52,7 +52,7 @@ pub async fn add(package_name: &str, package_save_path: &str, server_name: &str)
                 format!(
                     "{}/{}",
                     &package_save_path,
-                    file.file_name().to_string_lossy().to_string()
+                    file.file_name().to_string_lossy()
                 ),
             )?;
         }
@@ -60,7 +60,7 @@ pub async fn add(package_name: &str, package_save_path: &str, server_name: &str)
     Ok(())
 }
 
-pub async fn remove(package_name: &str, package_save_path: &str, server_name: &str) -> Result<()> {
+pub fn remove(package_name: &str, package_save_path: &str, server_name: &str) -> Result<()> {
     (Exec::shell(format!(
         "repo-remove {server_name}.db.tar.gz {package_name}"
     )))
