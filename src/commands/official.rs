@@ -1,13 +1,9 @@
-use super::super::{Lazy, Result};
+use super::super::Result;
 use anyhow::anyhow;
-use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::{fs::File, io::Write};
 use subprocess::Exec;
-
-static CLIENT: Lazy<Client> = Lazy::new(|| {
-    Client::builder().user_agent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36").build().unwrap()
-});
+use super::CLIENT;
 
 #[derive(Debug, Deserialize, Serialize)]
 struct Response {

@@ -114,9 +114,13 @@ async fn main() -> Result<()> {
                         for pkg_path in package_path {
                             custom::add(&pkg_path, &package_save_path, &server_name)?;
                         }
+                    } else if let Some(package_url) = _custom.package_url {
+                        for pkg_url in package_url {
+                            custom::add_with_url(&pkg_url, &package_save_path, &server_name).await?;
+                        }
                     } else {
                         return Err(anyhow!(
-                            "Failed to add package, cause `package_path` is not provided."
+                            "Failed to add package, cause `package_path` or `package_url` is not provided."
                         ));
                     }
                 }

@@ -49,6 +49,8 @@ pub struct Custom {
     pub package_path: Option<Vec<PathBuf>>,
     #[arg(long, help = "Custom package name of the package to deleted")]
     pub package_name: Option<Vec<String>>,
+    #[arg(long, help = "Custom package url")]
+    pub package_url: Option<Vec<String>>,
     #[arg(short, long, help = "Add custom package to repository")]
     pub add: bool,
     #[arg(short, long, help = "Remove custom package from repository")]
