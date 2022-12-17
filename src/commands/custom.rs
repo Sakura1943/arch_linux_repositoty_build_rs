@@ -15,8 +15,8 @@ pub fn add(package_path: &Path, save_path: &str, server_name: &str) -> Result<()
     )))
     .cwd(save_path)
     .join()?;
-    if let Some(package_path) = package_path.file_name() {
-        let target = format!("{save_path}/{}", package_path.to_string_lossy());
+    if let Some(pkg_path) = package_path.file_name() {
+        let target = format!("{save_path}/{}", pkg_path.to_string_lossy());
         copy(package_path, target)?;
     } else {
         return Err(anyhow!("Failed to get package_name"));
