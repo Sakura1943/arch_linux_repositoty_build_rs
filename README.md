@@ -11,7 +11,7 @@ cp -rf ./target/release/arb /usr/bin
 # Usage
 ```shell
 arb --help
-arb [-c|--config-file [config_file_path]] [-s | --show-all] <aur|official> <package_name> [-a|--add] [-r|--remove]
+arb [-c|--config-file [config_file_path]] [-s | --show-all] <aur|official|custom> <package_name> [package_path] [-a|--add] [-r|--remove]
 ```
 
 ----
