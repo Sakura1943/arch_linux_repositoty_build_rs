@@ -45,9 +45,9 @@ pub struct Official {
 
 #[derive(Clone, Args)]
 pub struct Custom {
-    #[arg(help = "Custom package path")]
+    #[arg(long, help = "Custom package path")]
     pub package_path: Option<Vec<PathBuf>>,
-    #[arg(help = "Custom package name of the package to bde deleted")]
+    #[arg(long, help = "Custom package name of the package to deleted")]
     pub package_name: Option<Vec<String>>,
     #[arg(short, long, help = "Add custom package to repository")]
     pub add: bool,
