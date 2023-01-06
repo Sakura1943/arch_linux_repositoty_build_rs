@@ -78,11 +78,7 @@ async fn main() -> Result<()> {
                         aur::remove(&pkg_name, &package_save_path, &server_name)?;
                     }
                 }
-                (true, true) => {
-                    cmd.print_help()?;
-                    return Ok(());
-                }
-                (false, false) => {
+                _ => {
                     cmd.print_help()?;
                     return Ok(());
                 }
@@ -99,11 +95,7 @@ async fn main() -> Result<()> {
                         official::remove(&pkg_name, &package_save_path, &server_name)?;
                     }
                 }
-                (true, true) => {
-                    cmd.print_help()?;
-                    return Ok(());
-                }
-                (false, false) => {
+                _ => {
                     cmd.print_help()?;
                     return Ok(());
                 }
@@ -135,11 +127,7 @@ async fn main() -> Result<()> {
                         ));
                     }
                 }
-                (true, true) => {
-                    cmd.print_help()?;
-                    return Ok(());
-                }
-                (false, false) => {
+                _ => {
                     cmd.print_help()?;
                     return Ok(());
                 }
