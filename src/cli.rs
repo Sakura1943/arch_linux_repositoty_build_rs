@@ -19,8 +19,12 @@ pub enum SubCommands {
     Aur(Aur),
     #[command(about = "Official package operations")]
     Official(Official),
-    #[command(about = "Custom package operations")]
-    Custom(Custom)
+    #[command(about = "Add custom packages to repository with package paths")]
+    CustomAddWithPaths(CustomAddWithPaths),
+    #[command(about = "Add custom packages to repository with package urls")]
+    CustomAddWithUrls(CustomAddWithUrls),
+    #[command(about = "Remove custom packages to repository")]
+    CustomRemove(CustomRemove)
 }
 
 #[derive(Clone, Args)]
@@ -44,17 +48,21 @@ pub struct Official {
 }
 
 #[derive(Clone, Args)]
-pub struct Custom {
-    #[arg(long, help = "Custom package path")]
-    pub package_path: Option<Vec<PathBuf>>,
-    #[arg(long, help = "Custom package name of the package to deleted")]
-    pub package_name: Option<Vec<String>>,
-    #[arg(long, help = "Custom package url")]
-    pub package_url: Option<Vec<String>>,
-    #[arg(short, long, help = "Add custom package to repository")]
-    pub add: bool,
-    #[arg(short, long, help = "Remove custom package from repository")]
-    pub remove: bool
+pub struct CustomAddWithPaths {
+    #[arg(help = "Package paths")]
+    pub package_paths: Vec<PathBuf>
+}
+
+#[derive(Clone, Args)]
+pub struct CustomAddWithUrls {
+    #[arg(help = "Package urls")]
+    pub package_urls: Vec<String>
+}
+
+#[derive(Clone, Args)]
+pub struct CustomRemove {
+    #[arg(help = "Package names")]
+    pub package_names: Vec<String>
 }
 
 #[allow(dead_code)]

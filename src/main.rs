@@ -1,5 +1,5 @@
 use arb::{
-    anyhow, basic_config,
+    basic_config,
     cli::{Cli, SubCommands},
     commands::{aur, custom, official},
     Result, CUSTOM_PATH,
@@ -100,38 +100,21 @@ async fn main() -> Result<()> {
                     return Ok(());
                 }
             },
-            SubCommands::Custom(_custom) => match (_custom.add, _custom.remove) {
-                (true, false) => {
-                    if let Some(package_path) = _custom.package_path {
-                        for pkg_path in package_path {
-                            custom::add(&pkg_path, &package_save_path, &server_name)?;
-                        }
-                    } else if let Some(package_url) = _custom.package_url {
-                        for pkg_url in package_url {
-                            custom::add_with_url(&pkg_url, &package_save_path, &server_name).await?;
-                        }
-                    } else {
-                        return Err(anyhow!(
-                            "Failed to add package, cause `package_path` or `package_url` is not provided."
-                        ));
-                    }
-                }
-                (false, true) => {
-                    if let Some(package_name) = _custom.package_name {
-                        for pkg_name in package_name {
-                            custom::remove(&pkg_name, &package_save_path, &server_name)?;
-                        }
-                    } else {
-                        return Err(anyhow!(
-                            "Failed to remove package, cause `package_name` is not provided."
-                        ));
-                    }
-                }
-                _ => {
-                    cmd.print_help()?;
-                    return Ok(());
+            SubCommands::CustomAddWithPaths(_custom) => {
+                for pkg_path in _custom.package_paths {
+                    custom::add(&pkg_path, &package_save_path, &server_name)?;
                 }
             },
+            SubCommands::CustomAddWithUrls(_custom) => {
+                for pkg_url in _custom.package_urls {
+                    custom::add_with_url(&pkg_url, &package_save_path, &server_name).await?;
+                }
+            },
+            SubCommands::CustomRemove(_custom) => {
+                for pkg_name in _custom.package_names {
+                    custom::remove(&pkg_name, &package_save_path, &server_name)?;
+                }
+            }
         }
     }
     if cli.show_all {
