@@ -1,4 +1,4 @@
-# csv_to_json_rs
+# arch_linux_repository_build_rs
 Arch Linux Repository Building CLI
 ----
 
